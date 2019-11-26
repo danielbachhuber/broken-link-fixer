@@ -14,6 +14,9 @@ class Comments extends Base {
 	 * [--ids=<comment-ids>]
 	 * : Limit process to specific comment IDs.
 	 *
+	 * [--dry-run]
+	 * : Run the process without modifications.
+	 *
 	 * [--limit=<limit>]
 	 * : Only perform a certain number of replacements.
 	 */
@@ -37,6 +40,8 @@ class Comments extends Base {
 		$query .= ' ORDER BY comment_ID ASC';
 
 		WP_CLI::log( 'Starting comment scan...' );
+		$author_url_count  = 0;
+		$content_url_count = 0;
 		foreach (
 			new \WP_CLI\Iterators\Query( $query, 1000 ) as $i => $comment
 		) {
@@ -47,6 +52,7 @@ class Comments extends Base {
 
 			// TODO skip if checked in the last 30 days
 
+			$updated_data = [];
 			if ( ! empty( $comment->comment_author_url ) ) {
 				$url         = $comment->comment_author_url;
 				$status_code = $this->get_url_http_status( $url );
@@ -56,14 +62,20 @@ class Comments extends Base {
 						$resolved_url  = $this->get_url_redirect_destination( $url );
 						if ( ! empty( $resolved_url ) ) {
 							WP_CLI::log( " - Replaced with: {$resolved_url}" );
+							$url = $resolved_url;
 						} else {
 							WP_CLI::log( ' - No target found for redirected URL.' );
+							$url = '';
 						}
 						break;
 					case 404:
 						WP_CLI::log( ' - Removed author URL.' );
 						break;
 
+				}
+				if ( $url !== $comment->comment_author_url ) {
+					$author_url_count++;
+					$updated_data['comment_author_url'] = $url;
 				}
 			}
 
@@ -102,10 +114,18 @@ class Comments extends Base {
 					$callback,
 					$content
 				);
+				if ( $content !== $comment->comment_content ) {
+					$content_url_count++;
+					$updated_data['comment_content'] = $content;
+				}
 			}
 
-			// Check comment content.
+			if ( ! empty( $updated_data ) && empty( $assoc_args['dry-run'] ) ) {
+				$updated_data['comment_ID'] = $comment->comment_ID;
+				wp_update_comment( $updated_data );
+			}
+
 		}
-		WP_CLI::success( 'Comment scan complete.' );
+		WP_CLI::success( "Comment scan complete. {$author_url_count} author URLs updated; {$content_url_count} content URLs updated." );
 	}
 }
