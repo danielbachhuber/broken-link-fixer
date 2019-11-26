@@ -13,6 +13,9 @@ class Comments extends Base {
 	 *
 	 * [--comments=<comment-ids>]
 	 * : Limit process to specific comment IDs.
+	 *
+	 * [--limit=<limit>]
+	 * : Only perform a certain number of replacements.
 	 */
 	public function __invoke( $args, $assoc_args ) {
 		global $wpdb;
@@ -35,8 +38,13 @@ class Comments extends Base {
 
 		WP_CLI::log( 'Starting comment scan...' );
 		foreach (
-			new \WP_CLI\Iterators\Query( $query, 1000 ) as $comment
+			new \WP_CLI\Iterators\Query( $query, 1000 ) as $i => $comment
 		) {
+
+			if ( ! empty( $assoc_args['limit'] ) && ( $i + 1 ) >= $assoc_args['limit'] ) {
+				break;
+			}
+
 			// TODO skip if checked in the last 30 days
 
 			if ( ! empty( $comment->comment_author_url ) ) {
