@@ -50,7 +50,7 @@ class Comments extends Base {
 			if ( ! empty( $comment->comment_author_url ) ) {
 				$url         = $comment->comment_author_url;
 				$status_code = $this->get_url_http_status( $url );
-				WP_CLI::log( "{$comment->comment_ID}, comment_author, {$url}, {$status_code}" );
+				WP_CLI::log( "{$comment->comment_ID}, comment_author_url, {$url}, {$status_code}" );
 				switch ( $status_code ) {
 					case 301:
 						$resolved_url  = $this->get_url_redirect_destination( $url );
