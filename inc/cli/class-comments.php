@@ -11,7 +11,7 @@ class Comments extends Base {
 	 *
 	 * ## OPTIONS
 	 *
-	 * [--comments=<comment-ids>]
+	 * [--ids=<comment-ids>]
 	 * : Limit process to specific comment IDs.
 	 *
 	 * [--limit=<limit>]
@@ -21,7 +21,7 @@ class Comments extends Base {
 		global $wpdb;
 
 		$query = "SELECT * FROM {$wpdb->comments} WHERE comment_approved=1";
-		if ( ! empty( $assoc_args['comments'] ) ) {
+		if ( ! empty( $assoc_args['ids'] ) ) {
 			$query .= " AND comment_ID IN("
 					. implode(
 						',',
@@ -29,7 +29,7 @@ class Comments extends Base {
 							'intval',
 							explode(
 								',',
-								$assoc_args['comments']
+								$assoc_args['ids']
 							)
 						)
 					) . ')';
