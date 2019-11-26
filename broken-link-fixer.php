@@ -9,7 +9,7 @@
  * Domain Path:     /languages
  * Version:         0.1.0
  *
- * @package         Broken_Link_Fixer
+ * @package         broken-link-fixer
  */
 
 require_once __DIR__ . '/autoload.php';

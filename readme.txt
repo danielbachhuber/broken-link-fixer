@@ -2,6 +2,7 @@
 Contributors: danielbachhuber
 Tags: cli
 Requires at least: 4.5
+Requires PHP: 7.1
 Tested up to: 5.2.4
 Stable tag: 0.1.0
 License: GPLv2 or later

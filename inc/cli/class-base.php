@@ -1,7 +1,15 @@
 <?php
+/**
+ * Base transformation class.
+ *
+ * @package broken-link-fixer
+ */
 
 namespace Broken_Link_Fixer\CLI;
 
+/**
+ * Base transformation class.
+ */
 class Base {
 
 	/**

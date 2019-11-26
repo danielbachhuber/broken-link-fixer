@@ -1,8 +1,10 @@
 <?php
-
 /**
- * Register the class autoloader
+ * Registers the class autoloader
+ *
+ * @package broken-link-fixer
  */
+
 spl_autoload_register(
 	function( $class ) {
 			$class = ltrim( $class, '\\' );

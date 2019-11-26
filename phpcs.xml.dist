@@ -18,7 +18,7 @@
 
 	<!-- Rules: Check PHP version compatibility -->
 	<!-- https://github.com/PHPCompatibility/PHPCompatibility#sniffing-your-code-for-compatibility-with-specific-php-versions -->
-	<config name="testVersion" value="5.3-"/>
+	<config name="testVersion" value="7.1-"/>
 	<!-- https://github.com/PHPCompatibility/PHPCompatibilityWP -->
 	<rule ref="PHPCompatibilityWP"/>
 
@@ -27,13 +27,7 @@
 	<!-- https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki/Customizable-sniff-properties -->
 	<config name="minimum_supported_wp_version" value="4.6"/>
 	<rule ref="WordPress">
-		<exclude name="WordPress.VIP"/>
-	</rule>
-	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
-		<properties>
-			<!-- Value: replace the function, class, and variable prefixes used. Separate multiple prefixes with a comma. -->
-			<property name="prefixes" type="array" value="my-plugin"/>
-		</properties>
+		<exclude name="Generic.Arrays.DisallowShortArraySyntax.Found" />
 	</rule>
 	<rule ref="WordPress.WP.I18n">
 		<properties>
@@ -45,5 +39,11 @@
 		<properties>
 			<property name="blank_line_check" value="true"/>
 		</properties>
+	</rule>
+	<rule ref="Squiz.Commenting.FunctionComment.MissingParamTag">
+		<exclude-pattern>/inc/cli</exclude-pattern>
+	</rule>
+	<rule ref="Squiz.Commenting.FileComment.Missing">
+		<exclude-pattern>/broken-link-fixer.php</exclude-pattern>
 	</rule>
 </ruleset>

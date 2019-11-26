@@ -1,9 +1,17 @@
 <?php
+/**
+ * Scans comment author urls and content for their status codes.
+ *
+ * @package broken-link-fixer
+ */
 
 namespace Broken_Link_Fixer\CLI;
 
 use WP_CLI;
 
+/**
+ * Scans comment author urls and content for their status codes.
+ */
 class Comments extends Base {
 
 	/**
@@ -25,7 +33,7 @@ class Comments extends Base {
 
 		$query = "SELECT * FROM {$wpdb->comments} WHERE comment_approved=1";
 		if ( ! empty( $assoc_args['ids'] ) ) {
-			$query .= " AND comment_ID IN("
+			$query .= ' AND comment_ID IN('
 					. implode(
 						',',
 						array_map(
@@ -45,12 +53,11 @@ class Comments extends Base {
 		foreach (
 			new \WP_CLI\Iterators\Query( $query, 1000 ) as $i => $comment
 		) {
-
 			if ( ! empty( $assoc_args['limit'] ) && ( $i + 1 ) >= $assoc_args['limit'] ) {
 				break;
 			}
 
-			// TODO skip if checked in the last 30 days
+			// TODO skip if checked in the last 30 days.
 
 			$updated_data = [];
 			if ( ! empty( $comment->comment_author_url ) ) {
@@ -59,7 +66,7 @@ class Comments extends Base {
 				WP_CLI::log( "{$comment->comment_ID}, comment_author_url, {$url}, {$status_code}" );
 				switch ( $status_code ) {
 					case 301:
-						$resolved_url  = $this->get_url_redirect_destination( $url );
+						$resolved_url = $this->get_url_redirect_destination( $url );
 						if ( ! empty( $resolved_url ) ) {
 							WP_CLI::log( " - Replaced with: {$resolved_url}" );
 							$url = $resolved_url;
@@ -72,7 +79,6 @@ class Comments extends Base {
 						WP_CLI::log( ' - Removed author URL.' );
 						$url = '';
 						break;
-
 				}
 				if ( $url !== $comment->comment_author_url ) {
 					$author_url_count++;
@@ -88,7 +94,7 @@ class Comments extends Base {
 					WP_CLI::log( "{$comment->comment_ID}, comment_content, {$url}, {$status_code}" );
 					switch ( $status_code ) {
 						case 301:
-							$resolved_url  = $this->get_url_redirect_destination( $url );
+							$resolved_url = $this->get_url_redirect_destination( $url );
 							if ( ! empty( $resolved_url ) ) {
 								WP_CLI::log( " - Replaced with: {$resolved_url}" );
 								$return = str_replace( $url, $resolved_url, $return );
@@ -116,13 +122,13 @@ class Comments extends Base {
 					}
 					return $return;
 				};
-				$content = $comment->comment_content;
-				$content = preg_replace_callback(
+				$content  = $comment->comment_content;
+				$content  = preg_replace_callback(
 					self::LINK_MATCH_REGEX,
 					$callback,
 					$content
 				);
-				$content = preg_replace_callback(
+				$content  = preg_replace_callback(
 					self::STANDALONE_URL_MATCH_REGEX,
 					$callback,
 					$content
@@ -137,7 +143,6 @@ class Comments extends Base {
 				$updated_data['comment_ID'] = $comment->comment_ID;
 				wp_update_comment( $updated_data );
 			}
-
 		}
 		WP_CLI::success( "Comment scan complete. {$author_url_count} author URLs updated; {$content_url_count} content URLs updated." );
 	}
