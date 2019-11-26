@@ -1,0 +1,11 @@
+
+{
+  "name": "broken-link-fixer",
+  "version": "0.1.0",
+  "main": "Gruntfile.js",
+  "author": "YOUR NAME HERE",
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-wp-readme-to-markdown": "~1.0.0"
+  }
+}
