@@ -70,6 +70,7 @@ class Comments extends Base {
 						break;
 					case 404:
 						WP_CLI::log( ' - Removed author URL.' );
+						$url = '';
 						break;
 
 				}
