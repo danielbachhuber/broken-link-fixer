@@ -13,6 +13,13 @@ namespace Broken_Link_Fixer\CLI;
 class Base {
 
 	/**
+	 * Meta key used to store the date-time for the last check.
+	 *
+	 * @var string
+	 */
+	const LAST_CHECK_META_KEY = 'blf_last_check';
+
+	/**
 	 * Regex to match links.
 	 *
 	 * @var string

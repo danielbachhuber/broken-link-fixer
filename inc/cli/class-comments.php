@@ -57,7 +57,11 @@ class Comments extends Base {
 				break;
 			}
 
-			// TODO skip if checked in the last 30 days.
+			$last_check = get_comment_meta( $comment->comment_ID, self::LAST_CHECK_META_KEY, true );
+			if ( $last_check
+				&& ( strtotime( $last_check ) + ( 30 * DAY_IN_SECONDS ) ) > time() ) {
+				continue;
+			}
 
 			$updated_data = [];
 			if ( ! empty( $comment->comment_author_url ) ) {
@@ -139,9 +143,16 @@ class Comments extends Base {
 				}
 			}
 
-			if ( ! empty( $updated_data ) && empty( $assoc_args['dry-run'] ) ) {
-				$updated_data['comment_ID'] = $comment->comment_ID;
-				wp_update_comment( $updated_data );
+			if ( empty( $assoc_args['dry-run'] ) ) {
+				if ( ! empty( $updated_data ) ) {
+					$updated_data['comment_ID'] = $comment->comment_ID;
+					wp_update_comment( $updated_data );
+				}
+				update_comment_meta(
+					$comment->comment_ID,
+					self::LAST_CHECK_META_KEY,
+					gmdate( 'Y-m-d H:i:s' )
+				);
 			}
 		}
 		WP_CLI::success( "Comment scan complete. {$author_url_count} author URLs updated; {$content_url_count} content URLs updated." );
