@@ -5,6 +5,20 @@ namespace Broken_Link_Fixer\CLI;
 class Base {
 
 	/**
+	 * Regex to match links.
+	 *
+	 * @var string
+	 */
+	const LINK_MATCH_REGEX = '#<a[^>]*href=[\'"](?<url>[^\'"]+)[\'"][^>]*>(?<text>[^<]+)</a>#';
+
+	/**
+	 * Regex to match standalone URLs.
+	 *
+	 * @var string
+	 */
+	const STANDALONE_URL_MATCH_REGEX = '#(^|\s)(?<url>https?[^\s]+)(\s|$)#';
+
+	/**
 	 * URLs that have already been resolved, with their destination.
 	 *
 	 * @var array

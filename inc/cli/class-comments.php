@@ -67,6 +67,43 @@ class Comments extends Base {
 				}
 			}
 
+			if ( false !== stripos( $comment->comment_content, 'http' ) ) {
+				$callback = function( $matches ) use ( $comment ) {
+					$return      = $matches[0];
+					$url         = $matches['url'];
+					$status_code = $this->get_url_http_status( $url );
+					WP_CLI::log( "{$comment->comment_ID}, comment_content, {$url}, {$status_code}" );
+					switch ( $status_code ) {
+						case 301:
+							$resolved_url  = $this->get_url_redirect_destination( $url );
+							if ( ! empty( $resolved_url ) ) {
+								WP_CLI::log( " - Replaced with: {$resolved_url}" );
+								$return = str_replace( $url, $resolved_url, $return );
+							} else {
+								WP_CLI::log( ' - No target found for redirected URL.' );
+								$return = isset( $matches['text'] ) ? $matches['text'] : '';
+							}
+							break;
+						case 404:
+							WP_CLI::log( ' - Removed content URL.' );
+							$return = isset( $matches['text'] ) ? $matches['text'] : '';
+							break;
+					}
+					return $return;
+				};
+				$content = $comment->comment_content;
+				$content = preg_replace_callback(
+					self::LINK_MATCH_REGEX,
+					$callback,
+					$content
+				);
+				$content = preg_replace_callback(
+					self::STANDALONE_URL_MATCH_REGEX,
+					$callback,
+					$content
+				);
+			}
+
 			// Check comment content.
 		}
 		WP_CLI::success( 'Comment scan complete.' );
