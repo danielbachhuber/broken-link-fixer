@@ -95,11 +95,23 @@ class Comments extends Base {
 							} else {
 								WP_CLI::log( ' - No target found for redirected URL.' );
 								$return = isset( $matches['text'] ) ? $matches['text'] : '';
+								if ( isset( $matches['before'] ) ) {
+									$return = $matches['before'] . $return;
+								}
+								if ( isset( $matches['after'] ) ) {
+									$return = $return . $matches['after'];
+								}
 							}
 							break;
 						case 404:
 							WP_CLI::log( ' - Removed content URL.' );
 							$return = isset( $matches['text'] ) ? $matches['text'] : '';
+							if ( isset( $matches['before'] ) ) {
+								$return = $matches['before'] . $return;
+							}
+							if ( isset( $matches['after'] ) ) {
+								$return = $return . $matches['after'];
+							}
 							break;
 					}
 					return $return;

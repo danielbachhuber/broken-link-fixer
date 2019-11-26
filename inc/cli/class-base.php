@@ -16,7 +16,7 @@ class Base {
 	 *
 	 * @var string
 	 */
-	const STANDALONE_URL_MATCH_REGEX = '#(^|\s)(?<url>https?[^\s]+)(\.\s|\.$|\s|$)#U';
+	const STANDALONE_URL_MATCH_REGEX = '#(?<before>^|\s)(?<url>https?[^\s]+)(?<after>\.\s|\.$|\s|$)#U';
 
 	/**
 	 * URLs that have already been resolved, with their destination.
