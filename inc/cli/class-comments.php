@@ -103,7 +103,7 @@ class Comments extends Base {
 								WP_CLI::log( " - Replaced with: {$resolved_url}" );
 								$return = str_replace( $url, $resolved_url, $return );
 							} else {
-								WP_CLI::log( ' - No target found for redirected URL.' );
+								WP_CLI::log( ' - No target found for redirected URL; URL removed.' );
 								$return = isset( $matches['text'] ) ? $matches['text'] : '';
 								if ( isset( $matches['before'] ) ) {
 									$return = $matches['before'] . $return;
