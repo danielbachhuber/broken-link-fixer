@@ -79,6 +79,10 @@ class Comments extends Base {
 				break;
 			}
 
+			if ( $i && $i % 100 === 0 ) {
+				\WP_CLI\Utils\wp_clear_object_cache();
+			}
+
 			$last_check = get_comment_meta( $comment->comment_ID, self::LAST_CHECK_META_KEY, true );
 			if ( $last_check
 				&& ( strtotime( $last_check ) + ( 30 * DAY_IN_SECONDS ) ) > time() ) {
