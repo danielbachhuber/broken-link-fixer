@@ -78,7 +78,7 @@ class Posts extends Base {
 				break;
 			}
 
-			if ( $i && $i % 100 === 0 ) {
+			if ( $i && 0 === $i % 100 ) {
 				\WP_CLI\Utils\wp_clear_object_cache();
 			}
 
