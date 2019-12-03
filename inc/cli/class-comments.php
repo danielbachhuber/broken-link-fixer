@@ -63,7 +63,7 @@ class Comments extends Base {
 		}
 		$query .= ' ORDER BY comment_ID ASC';
 
-		WP_CLI::log( 'Starting comment scan...' );
+		WP_CLI::log( sprintf( 'Starting comment scan%s...', ! empty( $assoc_args['dry-run'] ) ? ' with dry run' : '' ) );
 		$author_url_count  = 0;
 		$content_url_count = 0;
 		foreach (
