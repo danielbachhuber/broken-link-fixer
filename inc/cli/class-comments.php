@@ -22,6 +22,9 @@ class Comments extends Base {
 	 * [--ids=<comment-ids>]
 	 * : Limit process to specific comment IDs.
 	 *
+	 * [--start=<id>]
+	 * : Start the process at a specific comment ID.
+	 *
 	 * [--posts=<post-ids>]
 	 * : Limit process to specific post IDs.
 	 *
@@ -47,6 +50,9 @@ class Comments extends Base {
 							)
 						)
 					) . ')';
+		}
+		if ( ! empty( $assoc_args['start'] ) ) {
+			$query .= $wpdb->prepare( ' AND comment_ID >=%d', $assoc_args['start'] );
 		}
 		if ( ! empty( $assoc_args['posts'] ) ) {
 			$query .= ' AND comment_post_ID IN('
