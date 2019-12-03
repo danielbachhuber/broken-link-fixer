@@ -22,6 +22,9 @@ class Posts extends Base {
 	 * [--ids=<ids>]
 	 * : Limit process to specific post IDs.
 	 *
+	 * [--types=<types>]
+	 * : Limit the process to specific post types.
+	 *
 	 * [--start=<id>]
 	 * : Start the process at a specific post ID.
 	 *
@@ -47,6 +50,19 @@ class Posts extends Base {
 							)
 						)
 					) . ')';
+		}
+		if ( ! empty( $assoc_args['types'] ) ) {
+			$query .= ' AND post_type IN(\''
+					. implode(
+						'\',\'',
+						array_map(
+							'sanitize_title',
+							explode(
+								',',
+								$assoc_args['types']
+							)
+						)
+					) . '\')';
 		}
 		if ( ! empty( $assoc_args['start'] ) ) {
 			$query .= $wpdb->prepare( ' AND ID >=%d', $assoc_args['start'] );
