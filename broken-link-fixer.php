@@ -16,4 +16,5 @@ require_once __DIR__ . '/autoload.php';
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	WP_CLI::add_command( 'broken-link-fixer comments', 'Broken_Link_Fixer\CLI\Comments' );
+	WP_CLI::add_command( 'broken-link-fixer posts', 'Broken_Link_Fixer\CLI\Posts' );
 }
