@@ -22,6 +22,9 @@ class Comments extends Base {
 	 * [--ids=<comment-ids>]
 	 * : Limit process to specific comment IDs.
 	 *
+	 * [--posts=<post-ids>]
+	 * : Limit process to specific post IDs.
+	 *
 	 * [--dry-run]
 	 * : Run the process without modifications.
 	 *
@@ -41,6 +44,19 @@ class Comments extends Base {
 							explode(
 								',',
 								$assoc_args['ids']
+							)
+						)
+					) . ')';
+		}
+		if ( ! empty( $assoc_args['posts'] ) ) {
+			$query .= ' AND comment_post_ID IN('
+					. implode(
+						',',
+						array_map(
+							'intval',
+							explode(
+								',',
+								$assoc_args['posts']
 							)
 						)
 					) . ')';
