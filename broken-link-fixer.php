@@ -7,7 +7,7 @@
  * Author URI:      YOUR SITE HERE
  * Text Domain:     broken-link-fixer
  * Domain Path:     /languages
- * Version:         0.1.0
+ * Version:         0.1.0-alpha1
  *
  * @package         broken-link-fixer
  */
