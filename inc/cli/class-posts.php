@@ -69,7 +69,7 @@ class Posts extends Base {
 		}
 		$query .= ' ORDER BY ID ASC';
 
-		WP_CLI::log( sprintf( 'Starting post scan%s...', ! empty( $assoc_args['dry-run'] ) ? ' with dry run' : '' ) );
+		WP_CLI::log( sprintf( 'Starting post scan%s at %s...', ! empty( $assoc_args['dry-run'] ) ? ' with dry run' : '', gmdate( 'Y-m-d H:i:s' ) ) );
 		$content_url_count = 0;
 		foreach (
 			new \WP_CLI\Iterators\Query( $query, 1000 ) as $i => $post
@@ -154,6 +154,7 @@ class Posts extends Base {
 				);
 			}
 		}
-		WP_CLI::success( "Post scan complete. {$content_url_count} content URLs updated." );
+		$complete_time = gmdate( 'Y-m-d H:i:s' );
+		WP_CLI::success( "Post scan complete at {$complete_time}. {$content_url_count} content URLs updated." );
 	}
 }

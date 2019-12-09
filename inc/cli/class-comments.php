@@ -69,7 +69,7 @@ class Comments extends Base {
 		}
 		$query .= ' ORDER BY comment_ID ASC';
 
-		WP_CLI::log( sprintf( 'Starting comment scan%s...', ! empty( $assoc_args['dry-run'] ) ? ' with dry run' : '' ) );
+		WP_CLI::log( sprintf( 'Starting comment scan%s at %s...', ! empty( $assoc_args['dry-run'] ) ? ' with dry run' : '', gmdate( 'Y-m-d H:i:s' ) ) );
 		$author_url_count  = 0;
 		$content_url_count = 0;
 		foreach (
@@ -181,6 +181,7 @@ class Comments extends Base {
 				);
 			}
 		}
-		WP_CLI::success( "Comment scan complete. {$author_url_count} author URLs updated; {$content_url_count} content URLs updated." );
+		$complete_time = gmdate( 'Y-m-d H:i:s' );
+		WP_CLI::success( "Comment scan complete at {$complete_time}. {$author_url_count} author URLs updated; {$content_url_count} content URLs updated." );
 	}
 }
