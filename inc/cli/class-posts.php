@@ -70,7 +70,8 @@ class Posts extends Base {
 		$query .= ' ORDER BY ID ASC';
 
 		WP_CLI::log( sprintf( 'Starting post scan%s at %s...', ! empty( $assoc_args['dry-run'] ) ? ' with dry run' : '', gmdate( 'Y-m-d H:i:s' ) ) );
-		$content_url_count = 0;
+		$post_content_url_count = 0;
+		$post_excerpt_url_count = 0;
 		foreach (
 			new \WP_CLI\Iterators\Query( $query, 1000 ) as $i => $post
 		) {
@@ -89,12 +90,15 @@ class Posts extends Base {
 			}
 
 			$updated_data = [];
-			if ( false !== stripos( $post->post_content, 'http' ) ) {
-				$callback = function( $matches ) use ( $post ) {
+			foreach ( [ 'post_content', 'post_excerpt' ] as $post_field ) {
+				if ( false === stripos( $post->{$post_field}, 'http' ) ) {
+					continue;
+				}
+				$callback = function( $matches ) use ( $post, $post_field ) {
 					$return      = $matches[0];
 					$url         = $matches['url'];
 					$status_code = $this->get_url_http_status( $url );
-					WP_CLI::log( "{$post->ID}, post_content, {$url}, {$status_code}" );
+					WP_CLI::log( "{$post->ID}, {$post_field}, {$url}, {$status_code}" );
 					switch ( $status_code ) {
 						case 301:
 							$resolved_url = $this->get_url_redirect_destination( $url );
@@ -113,7 +117,7 @@ class Posts extends Base {
 							}
 							break;
 						case 404:
-							WP_CLI::log( ' - Removed content URL.' );
+							WP_CLI::log( " - Removed {$post_field} URL." );
 							$return = isset( $matches['text'] ) ? $matches['text'] : '';
 							if ( isset( $matches['before'] ) ) {
 								$return = $matches['before'] . $return;
@@ -125,7 +129,7 @@ class Posts extends Base {
 					}
 					return $return;
 				};
-				$content  = $post->post_content;
+				$content  = $post->{$post_field};
 				$content  = preg_replace_callback(
 					self::LINK_MATCH_REGEX,
 					$callback,
@@ -136,9 +140,10 @@ class Posts extends Base {
 					$callback,
 					$content
 				);
-				if ( $content !== $post->post_content ) {
-					$content_url_count++;
-					$updated_data['post_content'] = $content;
+				if ( $content !== $post->{$post_field} ) {
+					$increment = "{$post_field}_url_count";
+					$$increment++;
+					$updated_data[ $post_field ] = $content;
 				}
 			}
 
@@ -155,6 +160,6 @@ class Posts extends Base {
 			}
 		}
 		$complete_time = gmdate( 'Y-m-d H:i:s' );
-		WP_CLI::success( "Post scan complete at {$complete_time}. {$content_url_count} content URLs updated." );
+		WP_CLI::success( "Post scan complete at {$complete_time}. {$post_content_url_count} content URLs updated; {$post_excerpt_url_count} excerpt URLs updated." );
 	}
 }
