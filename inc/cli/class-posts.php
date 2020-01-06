@@ -31,6 +31,9 @@ class Posts extends Base {
 	 * [--dry-run]
 	 * : Run the process without modifications.
 	 *
+	 * [--force]
+	 * : Run the process even if a post has been checked in the last 30 days.
+	 *
 	 * [--limit=<limit>]
 	 * : Only perform a certain number of replacements.
 	 */
@@ -85,6 +88,7 @@ class Posts extends Base {
 
 			$last_check = get_post_meta( $post->ID, self::LAST_CHECK_META_KEY, true );
 			if ( $last_check
+				&& empty( $assoc_args['force'] )
 				&& ( strtotime( $last_check ) + ( 30 * DAY_IN_SECONDS ) ) > time() ) {
 				continue;
 			}
